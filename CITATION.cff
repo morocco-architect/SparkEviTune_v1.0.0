@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the archived v1.0.0 release and the associated SoftwareX paper."
+title: "SparkEviTune"
+type: software
+version: "1.0.0"
+license: MIT
+authors:
+  - family-names: ICHAHANE
+    given-names: Moulay Youssef
+    email: ichahane.m@ucd.ac.ma
+  - family-names: Dourhri
+    given-names: Ahmed
+  - family-names: Hanine
+    given-names: Mohamed
+repository-code: "https://github.com/morocco-architect/SparkEviTune"
+# Add date-released and doi after publishing and archiving the exact v1.0.0 release.

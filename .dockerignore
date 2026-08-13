@@ -1,0 +1,10 @@
+.git
+.github
+.venv
+__pycache__
+.pytest_cache
+*.pyc
+.env
+spark-logs/*
+data/*.db
+artifacts/models/*.joblib
