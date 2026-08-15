@@ -39,7 +39,7 @@ class TrainingSummary:
 
 
 class ModelTrainer:
-    TARGETS = {
+    TARGETS = {  # noqa: RUF012
         "duration": "target_duration_s",
         "spill": "target_memory_spill_gb",
         "cost": "target_cost",

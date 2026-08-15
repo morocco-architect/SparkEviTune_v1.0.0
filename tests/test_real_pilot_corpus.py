@@ -1,5 +1,5 @@
-from pathlib import Path
 import csv
+from pathlib import Path
 
 
 def test_softwarex_evidence_summaries_are_present_and_non_synthetic():

@@ -8,7 +8,6 @@ import pandas as pd
 from sparkevitune.feature_store import FeatureStore
 from sparkevitune.features import FEATURE_COLUMNS
 
-
 METADATA_COLUMNS = [
     "workload",
     "variant",

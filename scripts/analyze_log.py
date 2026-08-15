@@ -7,7 +7,6 @@ from sparkevitune.models import ClusterProfile, WorkloadProfile
 from sparkevitune.pipeline import SparkEviTunePipeline
 from sparkevitune.utils import to_jsonable
 
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("log")

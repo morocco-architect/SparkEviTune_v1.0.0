@@ -1,4 +1,5 @@
 import numpy as np
+
 from sparkevitune.features import FeatureBuilder
 from sparkevitune.optimizer import BayesianConfigOptimizer
 

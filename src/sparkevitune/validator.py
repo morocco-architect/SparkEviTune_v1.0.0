@@ -14,7 +14,7 @@ class ConstraintValidator:
     unsupported/secret-bearing parameters make the candidate invalid.
     """
 
-    FORBIDDEN_PARAMETERS = {
+    FORBIDDEN_PARAMETERS = {  # noqa: RUF012
         "spark.authenticate.secret",
         "spark.hadoop.fs.s3a.secret.key",
         "spark.hadoop.fs.azure.account.key",
@@ -75,7 +75,7 @@ class ConstraintValidator:
                 overhead_gb = parse_memory_gb(overhead_value)
             except (TypeError, ValueError):
                 overhead_gb = max(0.384, heap_gb * 0.10)
-                merged["spark.executor.memoryOverhead"] = f"{int(round(overhead_gb * 1024))}m"
+                merged["spark.executor.memoryOverhead"] = f"{round(overhead_gb * 1024)}m"
                 violations.append("spark.executor.memoryOverhead is not parseable.")
 
         usable_worker_memory = cluster.memory_per_worker_gb * 0.90

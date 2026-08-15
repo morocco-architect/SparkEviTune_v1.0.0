@@ -15,7 +15,7 @@ from .models import HybridReport
 
 SENSITIVE_KEY_PATTERN = re.compile(
     r"password|passwd|secret|token|access[._-]?key|api[._-]?key|credential|private[._-]?key",
-    re.I,
+    re.IGNORECASE,
 )
 SENSITIVE_VALUE_PATTERN = re.compile(
     r"(?i)(?:password|passwd|secret|token|api[_-]?key|access[_-]?key)\s*[:=]\s*[^\s,;]+"

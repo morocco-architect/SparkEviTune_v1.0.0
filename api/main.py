@@ -39,7 +39,7 @@ def health() -> dict[str, Any]:
 
 @app.post("/analyze/upload", tags=["analysis"])
 async def analyze_upload(
-    file: UploadFile = File(...),
+    file: UploadFile = File(...),  # noqa: B008
     workers: int = Query(1, ge=1, le=10000),
     cores_per_worker: int = Query(4, ge=1, le=1024),
     memory_per_worker_gb: float = Query(4.0, gt=0),
@@ -112,7 +112,7 @@ def model_status():
 @app.post("/feedback/{run_id}", tags=["learning"])
 def record_feedback(
     run_id: str,
-    observed: dict[str, float] = Body(
+    observed: dict[str, float] = Body(  # noqa: B008
         ...,
         examples=[{"duration_s": 38.2, "memory_spill_gb": 0.0, "cost": 0.02, "oom": 0}],
     ),

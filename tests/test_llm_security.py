@@ -36,6 +36,8 @@ def test_benign_spark_evidence_is_preserved():
 def test_adversarial_event_log_context_does_not_expose_instructions_or_secret(tmp_path):
     from pathlib import Path
 
+    from sparkevitune.detector import SymptomDetector
+    from sparkevitune.engine import RuleEngine
     from sparkevitune.llm import prepare_llm_context
     from sparkevitune.models import (
         AnomalyResult,
@@ -47,8 +49,6 @@ def test_adversarial_event_log_context_does_not_expose_instructions_or_secret(tm
         WorkloadProfile,
     )
     from sparkevitune.parser import SparkLogParser
-    from sparkevitune.detector import SymptomDetector
-    from sparkevitune.engine import RuleEngine
 
     fixture = Path(__file__).parent / "fixtures" / "adversarial_event_log.jsonl"
     app = SparkLogParser().parse(fixture)

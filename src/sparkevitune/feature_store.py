@@ -26,10 +26,9 @@ class FeatureStore:
         return connection
 
     def _initialize(self) -> None:
-        with closing(self._connect()) as connection:
-            with connection:
-                connection.execute(
-                    """
+        with closing(self._connect()) as connection, connection:
+            connection.execute(
+                """
                     CREATE TABLE IF NOT EXISTS runs (
                         run_id TEXT PRIMARY KEY,
                         created_at TEXT NOT NULL,
@@ -40,7 +39,7 @@ class FeatureStore:
                         metadata_json TEXT NOT NULL
                     )
                     """
-                )
+            )
 
     def upsert_run(
         self,
@@ -52,7 +51,7 @@ class FeatureStore:
         metadata: dict[str, Any] | None = None,
     ) -> None:
         clean_features = {key: float(features.get(key, 0.0)) for key in FEATURE_COLUMNS}
-        with closing(self._connect()) as connection:
+        with closing(self._connect()) as connection:  # noqa: SIM117
             with connection:
                 connection.execute(
                     """

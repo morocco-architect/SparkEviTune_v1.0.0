@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-import math
 from dataclasses import dataclass
-from typing import Callable
 
 import numpy as np
 from scipy.stats import norm
@@ -10,8 +8,8 @@ from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import Matern, WhiteKernel
 
 from .features import FeatureBuilder
-from .models import CandidateConfiguration, ClusterProfile, Prediction
 from .ml import PerformancePredictor
+from .models import CandidateConfiguration, ClusterProfile, Prediction
 
 
 @dataclass
@@ -59,8 +57,8 @@ class BayesianConfigOptimizer:
         # functionally redundant AQE=false/skewJoin=true combination.
         skew_join_enabled = aqe_enabled and vector[4] >= 0.5
         return {
-            "spark.executor.memory": f"{max(1, int(round(vector[0])))}g",
-            "spark.executor.cores": max(1, int(round(vector[1]))),
+            "spark.executor.memory": f"{max(1, round(vector[0]))}g",
+            "spark.executor.cores": max(1, round(vector[1])),
             "spark.sql.shuffle.partitions": max(10, int(round(vector[2] / 10.0) * 10)),
             "spark.sql.adaptive.enabled": "true" if aqe_enabled else "false",
             "spark.sql.adaptive.skewJoin.enabled": "true" if skew_join_enabled else "false",

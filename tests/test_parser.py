@@ -17,6 +17,7 @@ def test_parser_extracts_configuration_and_metrics():
 
 def test_parser_rejects_downloaded_sparkevitune_report(tmp_path):
     import json
+
     import pytest
 
     from sparkevitune.parser import InvalidSparkLogError

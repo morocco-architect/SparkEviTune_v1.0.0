@@ -21,7 +21,7 @@ from sklearn.metrics import (
     r2_score,
     recall_score,
 )
-from sklearn.model_selection import LeaveOneOut, LeaveOneGroupOut
+from sklearn.model_selection import LeaveOneGroupOut, LeaveOneOut
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import RobustScaler
 
@@ -50,7 +50,7 @@ def regression_model(seed: int = 42) -> Pipeline:
 def regression_metrics(y: np.ndarray, pred: np.ndarray) -> dict[str, float]:
     errors = np.abs(y - pred)
     return {
-        "n": int(len(y)),
+        "n": len(y),
         "mae_s": float(mean_absolute_error(y, pred)),
         "rmse_s": float(math.sqrt(mean_squared_error(y, pred))),
         "mape_pct": float(np.mean(errors / np.maximum(np.abs(y), 1e-9)) * 100.0),
@@ -189,7 +189,7 @@ def validator_study(seed: int = 42, per_category: int = 100) -> tuple[pd.DataFra
     unsafe = data[data["unsafe"] == 1]
     safe = data[data["unsafe"] == 0]
     metrics = {
-        "candidates": int(len(data)),
+        "candidates": len(data),
         "unsafe_detection_rate_pct": float(unsafe["detected"].mean() * 100),
         "unsafe_final_containment_rate_pct": float((~((unsafe["valid"] == 1) & (unsafe["final_safe"] == 0))).mean() * 100),
         "unsafe_accepted_count": int(unsafe["unsafe_accepted"].sum()),
@@ -321,8 +321,8 @@ def main() -> None:
     anomaly_score = -anomaly_model.decision_function(frame[ANOMALY_FEATURE_COLUMNS])
     y_anomaly = frame["label_anomaly"].to_numpy(int)
     anomaly_metrics = {
-        "n": int(len(frame)),
-        "normal_training_rows": int(len(normal)),
+        "n": len(frame),
+        "normal_training_rows": len(normal),
         "precision": float(precision_score(y_anomaly, anomaly_pred, zero_division=0)),
         "recall": float(recall_score(y_anomaly, anomaly_pred, zero_division=0)),
         "f1": float(f1_score(y_anomaly, anomaly_pred, zero_division=0)),
@@ -345,7 +345,7 @@ def main() -> None:
     pairs["speedup"] = pairs["bad"] / pairs["optimized"]
     pairs["change_pct"] = (pairs["optimized"] - pairs["bad"]) / pairs["bad"] * 100.0
     rq3 = {
-        "workloads": int(len(pairs)),
+        "workloads": len(pairs),
         "improved_workloads": int((pairs["speedup"] > 1).sum()),
         "regressed_workloads": int((pairs["speedup"] < 1).sum()),
         "median_speedup": float(pairs["speedup"].median()),
@@ -358,7 +358,7 @@ def main() -> None:
 
     results = {
         "corpus": {
-            "rows": int(len(frame)),
+            "rows": len(frame),
             "workloads": sorted(frame["workload"].unique().tolist()),
             "clusters": sorted(frame["cluster"].unique().tolist()),
             "repetitions_per_configuration": 1,

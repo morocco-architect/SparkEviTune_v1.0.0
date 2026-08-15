@@ -86,7 +86,6 @@ class SymptomDetector:
         parallelism_first = (
             str(config.get("spark.sql.adaptive.coalescePartitions.parallelismFirst", "true")).lower() == "true"
         )
-        skew_join = str(config.get("spark.sql.adaptive.skewJoin.enabled", "false")).lower() == "true"
 
         symptoms["skew"] = profile.max_skew_ratio > self.SKEW_RATIO_THRESHOLD
         if symptoms["skew"]:

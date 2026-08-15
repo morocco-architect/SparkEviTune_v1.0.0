@@ -8,10 +8,10 @@ from dataclasses import asdict, is_dataclass
 from pathlib import Path
 from typing import Any
 
-_MEMORY_RE = re.compile(r"^([0-9]*\.?[0-9]+)\s*(g|gb|m|mb|k|kb|b)?$", re.I)
+_MEMORY_RE = re.compile(r"^([0-9]*\.?[0-9]+)\s*(g|gb|m|mb|k|kb|b)?$", re.IGNORECASE)
 _SIZE_RE = re.compile(
     r"^([0-9]*\.?[0-9]+)\s*(b|kb|kib|k|mb|mib|m|gb|gib|g|tb|tib|t)?$",
-    re.I,
+    re.IGNORECASE,
 )
 MEMORY_STEPS_GB = [1, 2, 4, 6, 8, 12, 16, 24, 32, 48, 64, 96, 128]
 BYTES_PER_MIB = 1024**2
@@ -27,7 +27,7 @@ class SizeParseError(ValueError):
     pass
 
 
-def parse_memory_gb(value: str | int | float) -> float:
+def parse_memory_gb(value: str | float) -> float:
     if isinstance(value, (int, float)):
         return float(value)
     match = _MEMORY_RE.match(str(value).strip())
@@ -44,7 +44,7 @@ def parse_memory_gb(value: str | int | float) -> float:
     return amount / (1024.0**3)
 
 
-def parse_size_bytes(value: str | int | float) -> int:
+def parse_size_bytes(value: str | float) -> int:
     """Parse a Spark-style byte size while keeping the internal unit unambiguous.
 
     Spark commonly accepts values such as ``64MB`` and ``256m``. For this

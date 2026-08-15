@@ -5,8 +5,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from .models import AppProfile, CONFIG_KEYS, StageProfile
-
+from .models import CONFIG_KEYS, AppProfile, StageProfile
 
 _SPARK_35_EFFECTIVE_DEFAULTS = {
     "spark.executor.memory": "1g",

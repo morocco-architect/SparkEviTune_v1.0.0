@@ -14,7 +14,6 @@ class RecommendationFusion:
         if candidate is None:
             return list(rule_recommendations)
 
-        baseline_duration = None
         predicted_duration = candidate.prediction.duration_s
         for parameter, value in candidate.values.items():
             current = str(current_config.get(parameter, "<unset>"))

@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from .models import (
+    PRIORITY_PENALTY,
     AppProfile,
     ClusterProfile,
     Priority,
-    PRIORITY_PENALTY,
     Recommendation,
     RuleReport,
 )
