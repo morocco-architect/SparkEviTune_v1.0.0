@@ -16,3 +16,8 @@ spark-logs/*
 .DS_Store
 .idea/
 .vscode/
+
+*.egg-info/
+build/
+dist/
+.ruff_cache/

@@ -1,3 +1,0 @@
-[console_scripts]
-sparkevitune-analyze = sparkevitune.cli:analyze_main
-sparkevitune-train = sparkevitune.cli:train_main
