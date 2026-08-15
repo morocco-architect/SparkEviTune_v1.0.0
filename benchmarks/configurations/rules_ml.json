@@ -1,0 +1,9 @@
+{
+  "_comment": "Generated configuration placeholder; prepare it from the fusion layer before measurement.",
+  "spark.executor.memory": "2g",
+  "spark.executor.cores": "2",
+  "spark.sql.shuffle.partitions": "80",
+  "spark.sql.adaptive.enabled": "true",
+  "spark.sql.adaptive.skewJoin.enabled": "true",
+  "spark.serializer": "org.apache.spark.serializer.KryoSerializer"
+}

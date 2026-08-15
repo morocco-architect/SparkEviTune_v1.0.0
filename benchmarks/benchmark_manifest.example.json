@@ -1,0 +1,98 @@
+{
+  "repetitions": 5,
+  "randomized_order": true,
+  "architectures": [
+    "spark_defaults",
+    "rules_only",
+    "ml_only",
+    "rules_plus_ml",
+    "rules_ml_optimizer",
+    "full_validated_system"
+  ],
+  "clusters": [
+    {
+      "name": "single_worker",
+      "environment": {
+        "SPARK_MASTER": "local[4]",
+        "CLUSTER_WORKERS": "1",
+        "CORES_PER_WORKER": "4",
+        "MEMORY_PER_WORKER_GB": "4"
+      }
+    },
+    {
+      "name": "small_multi_worker",
+      "environment": {
+        "SPARK_MASTER": "spark://spark-master:7077",
+        "CLUSTER_WORKERS": "3",
+        "CORES_PER_WORKER": "4",
+        "MEMORY_PER_WORKER_GB": "8"
+      }
+    }
+  ],
+  "workloads": [
+    {
+      "name": "etl",
+      "sizes": ["small", "medium", "large"],
+      "command": [
+        "python",
+        "benchmarks/workloads/run_workload.py",
+        "--workload",
+        "etl",
+        "--size",
+        "{size}",
+        "--architecture",
+        "{architecture}",
+        "--output",
+        "{run_dir}"
+      ]
+    },
+    {
+      "name": "sql_joins",
+      "sizes": ["small", "medium", "large"],
+      "command": [
+        "python",
+        "benchmarks/workloads/run_workload.py",
+        "--workload",
+        "sql_joins",
+        "--size",
+        "{size}",
+        "--architecture",
+        "{architecture}",
+        "--output",
+        "{run_dir}"
+      ]
+    },
+    {
+      "name": "shuffle",
+      "sizes": ["small", "medium", "large"],
+      "command": [
+        "python",
+        "benchmarks/workloads/run_workload.py",
+        "--workload",
+        "shuffle",
+        "--size",
+        "{size}",
+        "--architecture",
+        "{architecture}",
+        "--output",
+        "{run_dir}"
+      ]
+    },
+    {
+      "name": "skew",
+      "sizes": ["small", "medium", "large"],
+      "command": [
+        "python",
+        "benchmarks/workloads/run_workload.py",
+        "--workload",
+        "skew",
+        "--size",
+        "{size}",
+        "--architecture",
+        "{architecture}",
+        "--output",
+        "{run_dir}"
+      ]
+    }
+  ]
+}

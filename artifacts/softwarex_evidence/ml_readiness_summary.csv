@@ -1,0 +1,21 @@
+metric,value,note
+real_metrics_files,138,raw inventory
+write_only_runs,81,eligible clean protocol candidates
+legacy_double_action_runs,57,excluded from publication corpus
+publication_runs,81,all non-synthetic
+workload_sql_joins,31,
+workload_heavy_shuffle,26,
+workload_skew_join,22,
+workload_etl,2,
+distinct_scenarios,16,scenario = workload x input_rows x effective config
+distinct_effective_configs,7,
+distinct_prediction_vectors,16,
+duration_range_s,6.921-21.383,observed across the 81 clean write-only runs
+duration_overall_mean_s,12.030,weighted across scenario summaries
+duration_overall_sd_s,4.267,pooled from scenario summaries
+scenarios_with_replicates,10,scenarios with within-scenario variance estimable
+spill_unique_values,3,range 0-0.843747 GiB
+cost_unique_values,1,constant zero; model not supported by current evidence
+oom_unique_values,1,constant zero; classifier not supported by current evidence
+training_min_scenarios,20,current 16 causes intentional abstention
+unit_tests,47,all passing in SparkEviTune v1.0.0 source package

@@ -1,0 +1,44 @@
+{
+  "repetitions": 5,
+  "randomized_order": true,
+  "architectures": [
+    "defaults",
+    "rules_only",
+    "ml_only",
+    "rules_ml",
+    "rules_ml_optimizer",
+    "full_validated"
+  ],
+  "clusters": [
+    {
+      "name": "local-4c-8g",
+      "environment": {
+        "SPARK_MASTER": "local[4]",
+        "SPARKEVITUNE_TOTAL_CORES": "4",
+        "SPARKEVITUNE_TOTAL_MEMORY_GB": "8"
+      }
+    }
+  ],
+  "workloads": [
+    {
+      "name": "etl",
+      "sizes": [100000, 500000, 1000000],
+      "command": ["python", "benchmarks/workloads/run_workload.py", "--workload", "etl", "--rows", "{size}", "--architecture", "{architecture}", "--run-dir", "{run_dir}"]
+    },
+    {
+      "name": "sql_joins",
+      "sizes": [100000, 500000, 1000000],
+      "command": ["python", "benchmarks/workloads/run_workload.py", "--workload", "sql_joins", "--rows", "{size}", "--architecture", "{architecture}", "--run-dir", "{run_dir}"]
+    },
+    {
+      "name": "heavy_shuffle",
+      "sizes": [100000, 500000, 1000000],
+      "command": ["python", "benchmarks/workloads/run_workload.py", "--workload", "heavy_shuffle", "--rows", "{size}", "--architecture", "{architecture}", "--run-dir", "{run_dir}"]
+    },
+    {
+      "name": "skew_join",
+      "sizes": [100000, 500000, 1000000],
+      "command": ["python", "benchmarks/workloads/run_workload.py", "--workload", "skew_join", "--rows", "{size}", "--architecture", "{architecture}", "--run-dir", "{run_dir}"]
+    }
+  ]
+}

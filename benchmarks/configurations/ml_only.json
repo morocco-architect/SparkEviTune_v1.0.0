@@ -1,0 +1,7 @@
+{
+  "_comment": "Replace this reference profile with the configuration emitted by the trained ML optimizer before the real study.",
+  "spark.executor.memory": "2g",
+  "spark.executor.cores": "2",
+  "spark.sql.shuffle.partitions": "80",
+  "spark.sql.adaptive.enabled": "true"
+}

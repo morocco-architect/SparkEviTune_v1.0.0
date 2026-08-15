@@ -1,0 +1,7 @@
+workload,evidence_basis,partitions,AQE,serializer,skewJoin,executor_memory
+ETL,observed only (2 clean runs),Abstain,—,Diagnostic,—,Abstain
+SQL 1M,repeated paired experiment,Abstain,—,Diagnostic,—,—
+SQL 10M (local),repeated paired experiment,Abstain,—,Diagnostic,—,Diagnostic
+Heavy Shuffle,repeated paired experiment,Recommend,—,Diagnostic,—,—
+Skew default,observed/default run,Abstain,—,Diagnostic,Diagnostic,—
+Skew stress,repeated blocked experiment,Recommend,Capability-level,Diagnostic,Diagnostic,—

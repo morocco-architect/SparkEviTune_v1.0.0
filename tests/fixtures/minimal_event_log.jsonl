@@ -1,0 +1,6 @@
+{"Event":"SparkListenerApplicationStart","App Name":"demo-etl","App ID":"app-demo-001","Timestamp":1000}
+{"Event":"SparkListenerEnvironmentUpdate","Spark Properties":{"spark.executor.memory":"512m","spark.executor.cores":"1","spark.driver.memory":"512m","spark.sql.shuffle.partitions":"400","spark.sql.adaptive.enabled":"false","spark.sql.adaptive.skewJoin.enabled":"false","spark.serializer":"org.apache.spark.serializer.JavaSerializer","spark.memory.fraction":"0.6"}}
+{"Event":"SparkListenerTaskEnd","Stage ID":0,"Task Info":{"Duration":1000},"Task Metrics":{"Memory Bytes Spilled":200000000,"Disk Bytes Spilled":300000000,"GC Time":150,"Shuffle Write Metrics":{"Shuffle Bytes Written":600000000},"Shuffle Read Metrics":{"Remote Bytes Read":100000000,"Local Bytes Read":0}}}
+{"Event":"SparkListenerTaskEnd","Stage ID":0,"Task Info":{"Duration":5000},"Task Metrics":{"Memory Bytes Spilled":300000000,"Disk Bytes Spilled":400000000,"GC Time":450,"Shuffle Write Metrics":{"Shuffle Bytes Written":500000000},"Shuffle Read Metrics":{"Remote Bytes Read":200000000,"Local Bytes Read":0}}}
+{"Event":"SparkListenerStageCompleted","Stage Info":{"Stage ID":0,"Stage Duration":6000}}
+{"Event":"SparkListenerApplicationEnd","Timestamp":8000}

@@ -1,0 +1,9 @@
+{
+  "workers": 2,
+  "cores_per_worker": 4,
+  "memory_per_worker_gb": 8,
+  "spark_version": "3.5.0",
+  "deployment_mode": "standalone",
+  "cost_per_core_hour": 0.0,
+  "cost_per_gb_hour": 0.0
+}

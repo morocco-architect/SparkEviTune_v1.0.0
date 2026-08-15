@@ -1,0 +1,13 @@
+experiment,variant,n,mean_duration_s,median_duration_s,sd_duration_s,gain_vs_baseline_pct,paired_mean_gain_s,ci95_low_s,ci95_high_s,t_p,wilcoxon_p,mechanism
+heavy_shuffle_1m,baseline,6,12.071,12.183,0.701,0.00,,,,,,807 tasks; p200
+heavy_shuffle_1m,p10_plus_kryo,6,8.883,8.628,0.606,26.41,3.188,2.365,4.012,0.00017464,0.03125,47 tasks; dominant effect is partition-count reduction
+heavy_shuffle_1m,p10_java,6,9.0665,,0.0,,,,0.07924,0.15625,Kryo ablation reference; no detectable Kryo benefit
+heavy_shuffle_1m,p10_kryo_ablation,6,9.6140,,0.0,-6.04,-0.5475,-1.18766,0.09266,0.07924,0.15625,no statistically detectable Kryo benefit
+skew_stress_1m,baseline,6,11.984,,,0.00,,,,,,208 tasks
+skew_stress_1m,p10_only,6,7.519,,,37.26,4.466,3.520,5.411,0.00006697,0.03125,18 tasks; overpartitioning correction dominates
+skew_stress_1m,full_aqe_skew_kryo_p10,6,7.707,,,35.69,4.277,3.254,5.300,0.00012093,0.03125,18 tasks; no demonstrated incremental benefit over p10-only
+skew_stress_1m,p10_vs_full,6,,,, -2.51,-0.189,-0.706,0.329,0.39188987,0.3125,no significant difference
+sql_joins_v2_1m,baseline,6,12.217,,,0.00,,,,,,AQE-managed workload
+sql_joins_v2_1m,p10_plus_kryo,6,12.294,,,-0.63,-0.077,-0.919,0.766,0.824371,1.0,neutral runtime result
+sql_joins_v2_10m,baseline,6,18.848,,,0.00,,,,,,spill regime
+sql_joins_v2_10m,p10_only,6,18.925,,,-0.41,-0.077,-0.506,0.351,0.662767,0.84375,neutral runtime; disk spill lower but no runtime benefit
