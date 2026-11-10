@@ -113,6 +113,17 @@ class BayesianConfigOptimizer:
             )
             return float(objective), prediction
 
+        # Evaluate the current configuration in the same normalized objective
+        # as all candidates. BO searches a fixed predictor, not Spark reruns.
+        baseline_objective = (
+            self.weights.duration * baseline.duration_s / duration_scale
+            + self.weights.spill * (baseline.memory_spill_gb or 0.0) / spill_scale
+            + self.weights.cost * (baseline.cost or 0.0) / cost_scale
+            + self.weights.oom_risk * (baseline.oom_risk or 0.0)
+        )
+        if not np.isfinite(baseline_objective):
+            return None
+
         bounds = self._bounds(cluster)
         initial_count = min(10, self.calls // 2)
         X = self._sample(bounds, initial_count)
@@ -144,7 +155,12 @@ class BayesianConfigOptimizer:
             y.append(objective)
             predictions.append(prediction)
 
+        # A candidate must actually improve the predicted baseline objective.
+        # Non-finite scores are never accepted. This remains predicted benefit,
+        # not experimental proof of a real runtime improvement.
         best_index = int(np.argmin(y))
+        if not np.isfinite(y[best_index]) or y[best_index] >= baseline_objective - 1e-9:
+            return None
         best_vector = X[best_index]
         return CandidateConfiguration(
             values=self._candidate_config(best_vector, current_config),

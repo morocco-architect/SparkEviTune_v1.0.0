@@ -82,12 +82,19 @@ class ConstraintValidator:
         if heap_gb + overhead_gb > usable_worker_memory:
             max_heap = max(1.0, usable_worker_memory - overhead_gb)
             adjusted_heap = max(1, int(max_heap))
-            merged["spark.executor.memory"] = f"{adjusted_heap}g"
-            heap_gb = float(adjusted_heap)
-            adjustments.append(
-                f"Reduced executor heap so heap+overhead fits within 90% of a "
-                f"{cluster.memory_per_worker_gb:.2f} GB worker."
-            )
+            if adjusted_heap < heap_gb:
+                merged["spark.executor.memory"] = f"{adjusted_heap}g"
+                heap_gb = float(adjusted_heap)
+                adjustments.append(
+                    f"Reduced executor heap to {adjusted_heap}g; "
+                    f"checking heap+overhead against 90% of a "
+                    f"{cluster.memory_per_worker_gb:.2f} GB worker."
+                )
+            else:
+                violations.append(
+                    "Executor heap+overhead exceeds the worker memory budget "
+                    "and the heap cannot be reduced further."
+                )
 
         try:
             cores = int(merged.get("spark.executor.cores", 1))
@@ -155,6 +162,38 @@ class ConstraintValidator:
             normalized = str(merged[boolean_parameter]).lower()
             if normalized not in {"true", "false"}:
                 violations.append(f"{boolean_parameter} must be true or false.")
+
+        # Final invariant check: a repair is never proof of feasibility.
+        # Conservative standalone-style packing: all executors must fit on
+        # workers in both CPU and memory. Other deployment modes require
+        # their own verified placement model before claiming feasibility.
+        try:
+            final_heap = parse_memory_gb(merged.get("spark.executor.memory", "1g"))
+            final_overhead = parse_memory_gb(merged["spark.executor.memoryOverhead"]) if (
+                "spark.executor.memoryOverhead" in merged
+            ) else max(0.384, final_heap * 0.10)
+            final_cores = int(merged.get("spark.executor.cores", 1))
+            final_instances = int(merged.get("spark.executor.instances", cluster.workers))
+            worker_limit = cluster.memory_per_worker_gb * 0.90
+            if final_heap <= 0 or final_overhead < 0:
+                violations.append("Executor heap and overhead must be nonnegative, with positive heap.")
+            if final_heap + final_overhead > worker_limit + 1e-9:
+                violations.append(
+                    "Final executor heap plus overhead exceeds usable per-worker memory."
+                )
+            if final_cores < 1 or final_cores > cluster.cores_per_worker:
+                violations.append("Final executor cores exceed the worker CPU budget.")
+            if final_instances < 1:
+                violations.append("Final executor instance count must be positive.")
+            # A necessary upper bound, not a full scheduler feasibility proof.
+            per_worker_slots = min(
+                cluster.cores_per_worker // max(1, final_cores),
+                int(worker_limit // max(final_heap + final_overhead, 1e-9)),
+            )
+            if final_instances > cluster.workers * per_worker_slots:
+                violations.append("Final executor instances exceed worker placement capacity.")
+        except (TypeError, ValueError, OverflowError, ZeroDivisionError):
+            violations.append("Final executor resource allocation cannot be validated.")
 
         return ValidationResult(
             valid=not violations,

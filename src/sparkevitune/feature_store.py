@@ -53,17 +53,11 @@ class FeatureStore:
         clean_features = {key: float(features.get(key, 0.0)) for key in FEATURE_COLUMNS}
         with closing(self._connect()) as connection:  # noqa: SIM117
             with connection:
-                connection.execute(
+                cursor = connection.execute(
                     """
                     INSERT INTO runs(run_id, created_at, app_id, features_json, config_json, targets_json, metadata_json)
                     VALUES(?, ?, ?, ?, ?, ?, ?)
-                    ON CONFLICT(run_id) DO UPDATE SET
-                        created_at=excluded.created_at,
-                        app_id=excluded.app_id,
-                        features_json=excluded.features_json,
-                        config_json=excluded.config_json,
-                        targets_json=excluded.targets_json,
-                        metadata_json=excluded.metadata_json
+                    ON CONFLICT(run_id) DO NOTHING
                     """,
                     (
                         run_id,
@@ -75,6 +69,11 @@ class FeatureStore:
                         json.dumps(metadata or {}, sort_keys=True),
                     ),
                 )
+                if cursor.rowcount != 1:
+                    raise ValueError(
+                        f"Observation {run_id!r} already exists; refusing to overwrite evidence. "
+                        "Use a unique execution_id for each rerun."
+                    )
 
     def count(self) -> int:
         with closing(self._connect()) as connection:

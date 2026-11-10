@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 import os
 from datetime import datetime, timezone
 from pathlib import Path
@@ -57,6 +58,8 @@ class SparkEviTunePipeline:
         workload = workload or WorkloadProfile()
         app = self.parser.parse(log_path)
         app = self.detector.detect(app, cluster, workload)
+        from .profile_guard import check_profile_compatibility
+        _, profile_guard_warning = check_profile_compatibility(app.spark_config.get("spark.master", ""), cluster)
         rule_report = self.rule_engine.build_report(app, cluster)
         features = self.feature_builder.build(app, cluster, workload)
         anomaly = self.anomaly_detector.detect(features)
@@ -91,6 +94,7 @@ class SparkEviTunePipeline:
                 "created_at": datetime.now(timezone.utc).isoformat(),
                 "pipeline_version": "1.0.0",
                 "model_registry": self.registry.status(),
+                "profile_guard_warning": profile_guard_warning,
                 "human_validation_required": True,
                 "auto_apply": False,
             },
@@ -115,21 +119,57 @@ class SparkEviTunePipeline:
         observed: dict[str, float],
         metadata: dict[str, Any] | None = None,
     ) -> None:
-        targets = {
-            "duration_s": float(observed["duration_s"]),
-            "memory_spill_gb": float(observed.get("memory_spill_gb", 0.0)),
-            "cost": float(observed.get("cost", 0.0)),
-            "oom": float(observed.get("oom", 0.0)),
-        }
-        candidate_features = self.feature_builder.apply_candidate(
-            report.features,
-            report.validation.configuration,
-        )
+        """Record a *verified rerun*, never an unexecuted recommendation.
+
+        Required metadata:
+          execution_id: unique ID for this concrete Spark rerun
+          executed_config: effective Spark config for that rerun
+          execution_verified: True, supplied by the caller after its own checks
+          scenario_id: grouping key for leakage-free evaluation
+          split: development/train/training/holdout/test
+
+        This guard checks the caller's evidence contract, not the Spark logs
+        themselves. The ingestion layer must independently verify provenance.
+        """
+        metadata = dict(metadata or {})
+        required = ("execution_id", "executed_config", "execution_verified", "scenario_id", "split")
+        missing = [k for k in required if k not in metadata]
+        if missing:
+            raise ValueError(f"Verified feedback metadata required: {missing}")
+        if metadata["execution_verified"] is not True:
+            raise ValueError("Feedback rejected: execution has not been verified")
+        if not isinstance(metadata["execution_id"], str) or not metadata["execution_id"].strip():
+            raise ValueError("execution_id must be a nonempty unique string")
+        if not isinstance(metadata["scenario_id"], str) or not metadata["scenario_id"].strip():
+            raise ValueError("scenario_id must be a nonempty grouping label")
+        split = str(metadata["split"]).strip().lower()
+        if split not in {"development", "train", "training", "holdout", "test"}:
+            raise ValueError("Invalid split label")
+        config = metadata["executed_config"]
+        if not isinstance(config, dict) or not config:
+            raise ValueError("executed_config must be a nonempty mapping")
+        if "duration_s" not in observed:
+            raise ValueError("A measured duration_s is required")
+        targets = {}
+        for key in ("duration_s", "memory_spill_gb", "cost", "oom"):
+            value = observed.get(key)
+            if value is None:
+                continue  # Unknown is NOT zero.
+            value = float(value)
+            if not math.isfinite(value) or value < 0:
+                raise ValueError(f"Invalid observed {key}: {value}")
+            if key == "oom" and value not in (0.0, 1.0):
+                raise ValueError("oom must be binary (0 or 1)")
+            targets[key] = value
+        candidate_features = self.feature_builder.apply_candidate(report.features, config)
+        # The same report may be rerun many times; each actual execution gets its own ID.
+        observation_id = stable_hash({"report_run_id": report.run_id, "execution_id": metadata["execution_id"]})
         self.store.upsert_run(
-            run_id=report.run_id,
+            run_id=observation_id,
             app_id=report.rule_report.app_id,
             features=candidate_features,
-            config=report.validation.configuration,
+            config=config,
             targets=targets,
-            metadata={"source": "validated_re-run", **(metadata or {})},
+            metadata={"source": "verified_rerun", "parent_report_id": report.run_id,
+                      **metadata, "split": split},
         )

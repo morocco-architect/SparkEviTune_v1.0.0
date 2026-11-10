@@ -45,11 +45,42 @@ if uploaded and st.button("Analyze"):
 
 report = st.session_state.get("report")
 if report:
+    guard_warning = report.get("audit", {}).get("profile_guard_warning")
+    if guard_warning:
+        st.warning(guard_warning)
     rule = report["rule_report"]
     col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Rule-compliance score", f"{rule['rule_compliance_score']}/100")
+    profile_warning = report.get("audit", {}).get("profile_guard_warning", "")
+    score_label = (
+        "Rule score (partial)"
+        if profile_warning
+        else "Rule-compliance score"
+    )
+    col1.metric(score_label, f"{rule['rule_compliance_score']}/100")
+
+    if profile_warning:
+        st.info(
+            "Profile compatibility: MISMATCH | "
+            "Shuffle-partition recommendation: WITHHELD"
+        )
+        st.caption(
+            "The partition rule was withheld because the declared "
+            "cluster profile does not match the observed Spark environment. "
+            "The displayed rule score is not an overall compliance "
+            "or performance guarantee."
+        )
+
     col2.metric("Observed duration", f"{rule['duration_s']:.2f}s")
-    col3.metric("ML anomaly score", f"{report['anomaly']['score']:.3f}")
+    anomaly = report.get("anomaly") or {}
+    anomaly_score = (
+        anomaly.get("score")
+        if anomaly.get("available") is True
+        else None
+    )
+    col3.metric(
+        "ML anomaly score",
+        f"{anomaly_score:.3f}" if anomaly_score is not None else "Model unavailable",
+    )
     predicted = report["baseline_prediction"].get("duration_s")
     col4.metric("Predicted duration", f"{predicted:.2f}s" if predicted is not None else "Model unavailable")
 

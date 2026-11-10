@@ -46,6 +46,7 @@ async def analyze_upload(
     spark_version: str = Query("3.5.0"),
     workload_type: str = Query("unknown"),
     input_size_gb: float = Query(0.0, ge=0),
+    input_rows: int = Query(0, ge=0),
     num_joins: int = Query(0, ge=0),
     num_aggregations: int = Query(0, ge=0),
     include_explanation: bool = Query(True),
@@ -71,6 +72,7 @@ async def analyze_upload(
             workload=WorkloadProfile(
                 workload_type=workload_type,
                 input_size_gb=input_size_gb,
+                input_rows=input_rows,
                 num_joins=num_joins,
                 num_aggregations=num_aggregations,
             ),
@@ -117,13 +119,26 @@ def record_feedback(
         examples=[{"duration_s": 38.2, "memory_spill_gb": 0.0, "cost": 0.02, "oom": 0}],
     ),
 ):
+    """Fail closed until a trusted rerun-ingestion service verifies evidence.
+
+    Caller-provided booleans, configurations and metrics do not prove that a
+    Spark rerun happened. Do not bridge this route to pipeline.record_feedback
+    merely by supplying execution_verified=True from a request body.
+    """
     report = REPORT_CACHE.get(run_id)
     if report is None:
-        raise HTTPException(404, "Report not found. Analyze the baseline run in this API process first.")
+        raise HTTPException(404, "Report not found. Analyze a baseline run first.")
     if "duration_s" not in observed:
         raise HTTPException(400, "observed.duration_s is required.")
-    pipeline.record_feedback(report, observed)
-    return {"stored": True, "run_id": run_id, "history_rows": pipeline.store.count()}
+    raise HTTPException(
+        status_code=409,
+        detail=(
+            "Feedback ingestion is disabled pending server-side verification "
+            "of actual rerun artifacts, executed Spark configuration, "
+            "unique execution identity, and observed metrics. "
+            "No observation has been stored."
+        ),
+    )
 
 
 @app.post("/reports/{run_id}/explain", tags=["llm"])

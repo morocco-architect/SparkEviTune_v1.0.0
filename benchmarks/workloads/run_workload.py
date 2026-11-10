@@ -50,7 +50,10 @@ def execute_workload(spark, workload: str, rows: int, output: Path, partitions: 
     df = build_data(spark, rows, skew_pct)
     output_str = str(output.resolve())
 
-    if workload == "etl":
+    if workload == "simple_scan":
+        # Pre-registered low-symptom negative control: one narrow Spark task, no shuffle.
+        result = df.coalesce(1).select("id", "value").filter(F.col("id") >= 0)
+    elif workload == "etl":
         result = (
             df.filter(F.col("value") > 5.0)
             .withColumn("bucket", (F.col("value") / 10).cast("int"))
@@ -111,7 +114,7 @@ def execute_workload(spark, workload: str, rows: int, output: Path, partitions: 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--workload", choices=["etl", "sql_joins", "heavy_shuffle", "skew_join"], required=True)
+    parser.add_argument("--workload", choices=["etl", "sql_joins", "heavy_shuffle", "skew_join", "simple_scan"], required=True)
     parser.add_argument("--rows", type=int, required=True)
     parser.add_argument("--architecture", required=True)
     parser.add_argument("--run-dir", type=Path, required=True)

@@ -20,7 +20,7 @@ from sklearn.metrics import (
     recall_score,
     roc_auc_score,
 )
-from sklearn.model_selection import GroupShuffleSplit, train_test_split
+from sklearn.model_selection import GroupShuffleSplit
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import RobustScaler
 
@@ -59,18 +59,22 @@ class ModelTrainer:
         self.random_state = random_state
 
     def _split(self, X: pd.DataFrame, y: pd.Series, frame: pd.DataFrame):
-        group_col = next((c for c in ("meta_scenario_id", "meta_workload", "meta_group") if c in frame), None)
-        if group_col and frame[group_col].nunique() >= 3:
-            groups = frame.loc[y.index, group_col]
-            splitter = GroupShuffleSplit(n_splits=1, test_size=0.25, random_state=self.random_state)
-            train_idx, test_idx = next(splitter.split(X, y, groups=groups))
-            return X.iloc[train_idx], X.iloc[test_idx], y.iloc[train_idx], y.iloc[test_idx], group_col
-        X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=0.2, random_state=self.random_state
-        )
-        return X_train, X_test, y_train, y_test, "random"
+        # A random row split leaks repeated workload/scenario information.
+        if "meta_scenario_id" not in frame.columns:
+            raise ValueError("meta_scenario_id is required for leakage-free evaluation")
+        groups = frame.loc[y.index, "meta_scenario_id"]
+        if groups.isna().any() or (groups.astype(str).str.strip() == "").any():
+            raise ValueError("Every labeled row must have a nonempty scenario_id")
+        if groups.nunique() < 3:
+            raise ValueError("At least three distinct scenarios are needed for held-out evaluation")
+        splitter = GroupShuffleSplit(n_splits=1, test_size=0.25, random_state=self.random_state)
+        train_idx, test_idx = next(splitter.split(X, y, groups=groups))
+        return X.iloc[train_idx], X.iloc[test_idx], y.iloc[train_idx], y.iloc[test_idx], "scenario_group"
 
     def train(self, frame: pd.DataFrame) -> TrainingSummary:
+        # M3: revoke previous eligibility before a new training attempt.
+        # A failed or partial training attempt must not expose old models.
+        self.registry.invalidate(("duration", "spill", "cost", "oom", "anomaly"))
         trained: list[str] = []
         skipped: dict[str, str] = {}
         metrics: dict[str, dict[str, float]] = {}
@@ -92,12 +96,15 @@ class ModelTrainer:
                 metrics={},
             )
 
-        if "meta_scenario_id" in frame.columns:
-            scenario_count = int(frame["meta_scenario_id"].dropna().nunique())
-        else:
-            scenario_count = len(
-                frame.reindex(columns=PREDICTION_FEATURE_COLUMNS, fill_value=0.0).drop_duplicates()
-            )
+        if "meta_scenario_id" not in frame.columns:
+            return TrainingSummary(rows=len(frame), trained=[],
+                                   skipped={"all": "Missing meta_scenario_id: scenario-grouped training required."},
+                                   metrics={})
+        valid_groups = frame["meta_scenario_id"].notna() & frame["meta_scenario_id"].astype(str).str.strip().ne("")
+        if not valid_groups.all():
+            return TrainingSummary(rows=len(frame), trained=[],
+                                   skipped={"all": "Missing scenario IDs in training data."}, metrics={})
+        scenario_count = int(frame["meta_scenario_id"].nunique())
         if scenario_count < self.min_scenarios:
             return TrainingSummary(
                 rows=len(frame),
@@ -126,7 +133,14 @@ class ModelTrainer:
                 skipped[name] = "OOM target contains only one class."
                 continue
 
-            X_train, X_test, y_train, y_test, split_kind = self._split(X_valid, y, frame.loc[valid])
+            try:
+                X_train, X_test, y_train, y_test, split_kind = self._split(X_valid, y, frame.loc[valid])
+            except ValueError as exc:
+                skipped[name] = str(exc)
+                continue
+            if name == "oom" and (y_train.nunique() < 2 or y_test.nunique() < 2):
+                skipped[name] = "OOM class absent from train or test scenarios."
+                continue
             if name == "oom":
                 estimator: Any = RandomForestClassifier(
                     n_estimators=300,

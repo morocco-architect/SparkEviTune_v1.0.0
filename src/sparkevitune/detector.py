@@ -38,6 +38,10 @@ class SymptomDetector:
 
         spark_master = str(config.get("spark.master", "")).strip()
         local_execution = spark_master.lower().startswith("local")
+        from .profile_guard import check_profile_compatibility
+        local_profile_mismatch, profile_guard_warning = check_profile_compatibility(spark_master, cluster)
+        if profile_guard_warning and profile_guard_warning not in warnings:
+            warnings.append(profile_guard_warning)
 
         symptoms["spilling"] = profile.total_memory_spill_gb > self.SPILL_THRESHOLD_GB
         if symptoms["spilling"]:
@@ -142,6 +146,10 @@ class SymptomDetector:
             symptoms["bad_partitions"] = static_mismatch and observed_overpartitioning
         else:
             symptoms["bad_partitions"] = static_mismatch
+
+        if local_profile_mismatch:
+            # Do not translate a hypothetical cluster size into a local-run recommendation.
+            symptoms["bad_partitions"] = False
 
         if symptoms["bad_partitions"]:
             details["bad_partitions"] = (
