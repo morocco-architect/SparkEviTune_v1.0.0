@@ -1,3 +1,4 @@
+> **SoftwareX reviewer-correction branch — UNRELEASED.** This checkout is a local revision candidate, not the historical public `v1.0.0` release. Do not claim that the existing public tag contains M2/M3/API fixes. No public revised release or DOI has been established. No git push, tag, scientific workload, or Lot C execution is authorized by this document.
 # SparkEviTune
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -20,7 +21,7 @@ The SoftwareX candidate deliberately separates **observation** from **action**. 
 - ML training excludes held-out rows and requires a minimum number of **distinct scenarios**, not merely repeated rows;
 - no configuration is auto-applied.
 
-The current package test suite contains **47 passing tests**. See `TEST_REPORT.md` and `docs/softwarex_evaluation.md`.
+The current package test suite contains **61 passing tests under Python 3.12**. See `TEST_REPORT.md` and `docs/softwarex_evaluation.md`.
 
 ## Architecture
 
@@ -108,7 +109,7 @@ SPARKEVITUNE_MIN_TRAINING_RUNS=20
 SPARKEVITUNE_MIN_TRAINING_SCENARIOS=20
 ```
 
-The current SoftwareX evidence has 81 clean real runs but only 16 distinct scenarios, so the publication trainer intentionally abstains. This release does not claim predictive ML accuracy, cost prediction, or OOM-risk calibration from that corpus.
+The current SoftwareX evidence has 81 clean real runs but only 16 distinct scenarios, so the publication trainer intentionally abstains. The historical v1.0.0 publication corpus does not substantiate predictive ML accuracy, cost prediction, or OOM-risk calibration; the separate Learning01 evaluation also showed limited predictive generalization.
 
 ## Core modules
 
@@ -152,7 +153,7 @@ Use the exact tagged source archive, preserve raw event logs outside the compact
 
 https://github.com/morocco-architect/SparkEviTune_v1.0.0
 
-**Pre-submission requirement:** publish this exact source as GitHub release `v1.0.0` and archive that release in Zenodo (or an equivalent long-term repository). Then add the immutable release URL and DOI to `CITATION.cff` and the paper's code-metadata table before submission.
+**Revised-release requirement (not yet authorized):** preserve the existing public `v1.0.0` tag. After final technical and manuscript qualification and explicit approval, select a distinct version identifier, publish the exact qualified revision, and archive that same source. Update `CITATION.cff` and SoftwareX metadata only once an actual release and DOI exist.
 
 ## License
 

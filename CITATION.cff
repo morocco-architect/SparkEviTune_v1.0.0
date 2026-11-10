@@ -1,5 +1,8 @@
+# Citation metadata below refer to the historical public v1.0.0 baseline.
+# softwarex-major-revision is an unpublished candidate, not a new release.
+# Do not add a new version, date-released, or DOI until the revised release is verified and approved.
 cff-version: 1.2.0
-message: "If you use this software, please cite the archived v1.0.0 release and the associated SoftwareX paper."
+message: "If you use SparkEviTune, please cite the software version actually used and the associated publication, if applicable."
 title: "SparkEviTune"
 type: software
 version: "1.0.0"

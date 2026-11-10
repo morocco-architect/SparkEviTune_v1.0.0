@@ -1,3 +1,11 @@
+## SoftwareX reviewer-correction qualification (local, not a release)
+
+This addendum documents a separate local candidate, not the historical `v1.0.0` benchmark. At the qualified source revision, 52 automated Python tests and Ruff checks passed under Python 3.14. This does not establish parity with the reviewer's Python 3.11 environment or certification of multi-worker deployment.
+
+A separate retrospective Learning01 audit verified the 90 comparison executions against the recorded plan; 90/90 application durations agreed with Spark start/end events, all 342 Spark jobs completed successfully, and 1,128 shared configuration-property comparisons had zero mismatches. These findings are local-run integrity evidence, not a claim of broad predictive generalization. Independent prediction metrics: MAE 8.9637 s, RMSE 11.9878 s, R² -0.0621, across 30 scenario-strategy predictions drawn from ten scenarios.
+
+Original v1.0.0 validation information is retained below as historical evidence.
+
 # Validation report - v1.0.0 SoftwareX candidate
 
 Date: 2026-08-13
@@ -33,3 +41,11 @@ The clean feature store contains 81 real non-synthetic runs but only 16 distinct
 ## Scope limitation
 
 The current repeated benchmark is executed with Spark 3.5.7 in WSL Ubuntu using `local[4]`. Multi-worker and cloud-cost generalization are outside the empirical scope of this SoftwareX release. No configuration is automatically applied.
+
+
+## SoftwareX consolidated local qualification - 2026-11-09 - fef33f8
+Commit: fef33f82318228a5e3640c8ae39d37aee310d013. Windows Python 3.12.10; pytest 9.2.0. Dedicated M3 tests: 3 passed. Full regression suite: 61 passed, 1 Starlette/httpx deprecation warning. Ruff, pip check and git diff --check: PASS. Scope: tested Windows scenarios only. General multiprocessing safety, other Python versions and Streamlit rendering are not established. No new scientific workload was executed. PUBLIC_RELEASE=NO_GO.
+
+
+## SoftwareX Python 3.14 qualification - 2026-11-10 - cf0cbe3
+Qualified source: cf0cbe378ff33211e1aebda88d50b08c8ebedddf. Windows Python 3.14.0, pytest 9.1.1. Dedicated M3 tests: 3/3 PASS. Full suite: 61/61 PASS, one Starlette/httpx deprecation warning. Ruff PASS; git diff --check PASS. Scope: one local Windows run. Python 3.10/3.11/3.13, general concurrency safety and Streamlit rendering not established. PUBLIC_RELEASE=NO_GO.
