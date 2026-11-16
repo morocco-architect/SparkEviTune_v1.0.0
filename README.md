@@ -1,12 +1,15 @@
 # SparkEviTune
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+**Published release: v1.0.1 (2026-11-16).**
 
-**SparkEviTune v1.0.0** is an evidence-aware Apache Spark configuration advisor built around Spark event logs. It combines a deterministic rules baseline with optional historical ML models, constrained Bayesian search, deterministic validation, grounded explanation, and a human-controlled feedback loop.
+SparkEviTune is an evidence-aware, human-controlled software framework for Apache Spark configuration guidance. It combines deterministic configuration rules, event-log analysis, optional machine-learning components subject to data-readiness gates, constrained optimization, and optional explanations.
 
-The SoftwareX candidate deliberately separates **observation** from **action**. Java serialization, task-duration skew, or spill can remain visible diagnostic evidence without automatically becoming a tuning recommendation.
+This corrective release passed 61 automated tests under Windows Python 3.12 and Python 3.14. These tests do **not** establish general multi-worker deployment correctness or unrestricted concurrency safety. Historical Spark benchmarks remain associated with their original implementations and environments. The publication ML gate is closed (16 distinct scenarios against 20 required); no general predictive accuracy or universal speedup is claimed. AQE-01 and Lot C are not validated. Suggested configurations are not automatically applied.
 
-## SoftwareX candidate status
+- [GitHub release v1.0.1](https://github.com/morocco-architect/SparkEviTune_v1.0.0/releases/tag/v1.0.1)
+- [Zenodo record](https://zenodo.org/records/24293565)
+
+## Evidence-aware configuration behavior
 
 - Spark 3.5.7 effective defaults are reconstructed when event logs omit them.
 - shuffle partition sizing uses the maximum successful-stage producer-side shuffle write, not cumulative read+write traffic;
@@ -20,7 +23,7 @@ The SoftwareX candidate deliberately separates **observation** from **action**. 
 - ML training excludes held-out rows and requires a minimum number of **distinct scenarios**, not merely repeated rows;
 - no configuration is auto-applied.
 
-The current package test suite contains **47 passing tests**. See `TEST_REPORT.md` and `docs/softwarex_evaluation.md`.
+The current package test suite contains **61 passing tests**. See `TEST_REPORT.md` and `docs/softwarex_evaluation.md`.
 
 ## Architecture
 
@@ -152,12 +155,10 @@ Use the exact tagged source archive, preserve raw event logs outside the compact
 
 https://github.com/morocco-architect/SparkEviTune_v1.0.0
 
-**Pre-submission requirement:** publish this exact source as GitHub release `v1.0.0` and archive that release in Zenodo (or an equivalent long-term repository). Then add the immutable release URL and DOI to `CITATION.cff` and the paper's code-metadata table before submission.
-
 ## License
 
-MIT. See `LICENSE`.
+MIT. See LICENSE.
 
 ## Citation
 
-See `CITATION.cff`. For long-term citation, create a versioned GitHub release and archival DOI from the official repository.
+See CITATION.cff and the Zenodo v1.0.1 record: https://zenodo.org/records/24293565
