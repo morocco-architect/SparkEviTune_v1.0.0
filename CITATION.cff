@@ -17,4 +17,4 @@ authors:
     orcid: "https://orcid.org/0000-0001-5417-3503"
 repository-code: "https://github.com/morocco-architect/SparkEviTune_v1.0.0"
 url: "https://zenodo.org/records/24293565"
-# Insert doi: only after checking the version-specific DOI on Zenodo.
+doi: "10.5281/zenodo.24293565"
