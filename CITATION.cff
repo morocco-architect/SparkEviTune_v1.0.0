@@ -1,16 +1,20 @@
 cff-version: 1.2.0
-message: "If you use this software, please cite the archived v1.0.0 release and the associated SoftwareX paper."
-title: "SparkEviTune"
+message: "If you use SparkEviTune, please cite the software version actually used and the associated publication, if applicable."
+title: "SparkEviTune: Evidence-Aware Apache Spark Configuration Guidance with Gated Machine Learning"
 type: software
-version: "1.0.0"
+version: "1.0.1"
+date-released: 2026-11-16
 license: MIT
 authors:
-  - family-names: ICHAHANE
+  - family-names: Ichahane
     given-names: Moulay Youssef
-    email: ichahane.m@ucd.ac.ma
+    orcid: "https://orcid.org/0000-0001-7382-1019"
   - family-names: Dourhri
     given-names: Ahmed
+    orcid: "https://orcid.org/0000-0001-7246-3707"
   - family-names: Hanine
     given-names: Mohamed
+    orcid: "https://orcid.org/0000-0001-5417-3503"
 repository-code: "https://github.com/morocco-architect/SparkEviTune_v1.0.0"
-# Add date-released and doi after publishing and archiving the exact v1.0.0 release.
+url: "https://zenodo.org/records/24293565"
+# Insert doi: only after checking the version-specific DOI on Zenodo.

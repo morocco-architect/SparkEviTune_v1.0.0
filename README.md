@@ -1,26 +1,13 @@
 # SparkEviTune
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+**Published release: v1.0.1 (2026-11-16).**
 
-**SparkEviTune v1.0.0** is an evidence-aware Apache Spark configuration advisor built around Spark event logs. It combines a deterministic rules baseline with optional historical ML models, constrained Bayesian search, deterministic validation, grounded explanation, and a human-controlled feedback loop.
+SparkEviTune is an evidence-aware, human-controlled software framework for Apache Spark configuration guidance. It combines deterministic configuration rules, event-log analysis, optional machine-learning components subject to data-readiness gates, constrained optimization, and optional explanations.
 
-The SoftwareX candidate deliberately separates **observation** from **action**. Java serialization, task-duration skew, or spill can remain visible diagnostic evidence without automatically becoming a tuning recommendation.
+This corrective release passed 61 automated tests under Windows Python 3.12 and Python 3.14. These tests do **not** establish general multi-worker deployment correctness or unrestricted concurrency safety. Historical Spark benchmarks remain associated with their original implementations and environments. The publication ML gate is closed (16 distinct scenarios against 20 required); no general predictive accuracy or universal speedup is claimed. AQE-01 and Lot C are not validated. Suggested configurations are not automatically applied.
 
-## SoftwareX candidate status
-
-- Spark 3.5.7 effective defaults are reconstructed when event logs omit them.
-- shuffle partition sizing uses the maximum successful-stage producer-side shuffle write, not cumulative read+write traffic;
-- AQE/coalescing suppresses static overpartitioning warnings when the executed task count is already modest;
-- `spark.sql.adaptive.coalescePartitions.parallelismFirst=true` is reconstructed for Spark 3.5.7; the 64 MiB advisory size is treated as a heuristic starting reference rather than the partition size necessarily applied by AQE;
-- `skewJoin` is conditionally active only when AQE is enabled; AQE-off/skewJoin-on search points are canonicalized;
-- task-duration skew is not treated as proof of skewed join partitions;
-- JavaSerializer is diagnostic context only unless workload-specific evidence justifies Kryo;
-- local-mode runs preserve spill observations but suppress executor-memory escalation and optimizer executor sizing;
-- feedback rows are aligned to the configuration that was actually re-run;
-- ML training excludes held-out rows and requires a minimum number of **distinct scenarios**, not merely repeated rows;
-- no configuration is auto-applied.
-
-The current package test suite contains **47 passing tests**. See `TEST_REPORT.md` and `docs/softwarex_evaluation.md`.
+- [GitHub release v1.0.1](https://github.com/morocco-architect/SparkEviTune_v1.0.0/releases/tag/v1.0.1)
+- [Zenodo record](https://zenodo.org/records/24293565)
 
 ## Architecture
 
