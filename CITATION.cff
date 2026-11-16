@@ -1,11 +1,11 @@
-# Citation metadata below refer to the historical public v1.0.0 baseline.
-# softwarex-major-revision is an unpublished candidate, not a new release.
-# Do not add a new version, date-released, or DOI until the revised release is verified and approved.
+# Citation metadata for the SparkEviTune v1.0.1 release candidate.
+# Historical v1.0.0 remains unchanged.
+# The revised release is not yet published; DOI and release date are pending.
 cff-version: 1.2.0
 message: "If you use SparkEviTune, please cite the software version actually used and the associated publication, if applicable."
 title: "SparkEviTune"
 type: software
-version: "1.0.0"
+version: "1.0.1"
 license: MIT
 authors:
   - family-names: ICHAHANE
@@ -16,4 +16,4 @@ authors:
   - family-names: Hanine
     given-names: Mohamed
 repository-code: "https://github.com/morocco-architect/SparkEviTune_v1.0.0"
-# Add date-released and doi after publishing and archiving the exact v1.0.0 release.
+# Add date-released and doi only after publication and archival.

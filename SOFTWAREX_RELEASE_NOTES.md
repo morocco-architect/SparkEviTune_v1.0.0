@@ -1,3 +1,46 @@
+# SparkEviTune v1.0.1 — SoftwareX corrective release candidate
+
+**Status:** Prepared, not yet published
+**Preparation date:** 2026-11-16
+**Source branch:** `softwarex-major-revision-from-main`
+**Verified source commit:** `7ed7565dbf972d75ced26189026afdfd443f72e3`
+
+## Software improvements
+
+- Added support for workload input-row counts in the FastAPI upload endpoint.
+- Integrated Profile Guard functionality and corresponding regression tests.
+- Integrated ModelRegistry multiprocessing-related corrections and targeted tests.
+- Updated dashboard, detection, pipeline, machine-learning and validation components.
+
+## Verification
+
+- Windows Python 3.12: 61/61 automated tests passed; Ruff and dependency checks passed.
+- Windows Python 3.14: 61/61 automated tests passed; Ruff passed.
+- The tests do not establish general multiprocessing safety or deployment correctness across all supported environments.
+- End-to-end Streamlit–FastAPI verification is not yet confirmed.
+
+## Scientific scope and limitations
+
+- Historical experimental results remain associated with their original software versions and execution environments.
+- The independent prediction assessment does not establish reliable generalization.
+- The ML publication-readiness gate remains closed because the historical corpus contains 16 distinct scenarios against a threshold of 20.
+- Historical Table 3 reconstruction and A-03/A-04 traceability limitations remain documented.
+- Multi-worker Spark performance and cloud-cost estimation are not validated.
+
+## Release integrity
+
+- The historical `v1.0.0` release and tag remain unchanged.
+- `v1.0.1` is a corrective release candidate, not a new experimental benchmark.
+- No revised DOI or public release is claimed.
+- Public publication remains subject to explicit approval and resolution or documented acceptance of applicable release restrictions.
+
+---
+
+## Historical qualification records
+
+The sections below preserve the original prepublication qualification reports and their historical GO/NO-GO decisions.
+
+
 > Status: DRAFT_NOT_FROZEN;SMOKE_NOT_AUTHORIZED. Lot C: NO_GO. No public release or DOI for this revision.
 
 # SparkEviTune — SoftwareX revision candidate (UNRELEASED)

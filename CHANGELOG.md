@@ -9,7 +9,7 @@
 - Historical Table 3 still lacks complete independently reconstructed primary run evidence. No new public release or DOI is claimed.
 
 
-## v1.0.0 - 2026-08-13
+## v1.0.1 - 2026-08-13
 
 First publication-ready release under the **SparkEviTune** name.
 
@@ -35,8 +35,8 @@ First publication-ready release under the **SparkEviTune** name.
   988368138895FEC48A85D048AC049DF0E90FD1D4C83D1A75D4DF7C0F7EA757DB.
 - A-04: acceptance criterion not identified; unresolved.
 - Python 3.11 and remaining scientific release checks: pending.
-- Current package version: 1.0.0.
-- Proposed candidate label: v1.1.0-rc1 (not a Git tag).
+- Current package version: 1.0.1.
+- Proposed candidate label: v1.0.1-rc1 (not a Git tag).
 - Public release: NO-GO.
 - AQE01_STATUS=DRAFT_NOT_FROZEN;SMOKE_NOT_AUTHORIZED
 - LOT_C_EXECUTION_DECISION=NO_GO
